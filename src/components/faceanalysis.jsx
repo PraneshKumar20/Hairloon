@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Sparkles, Upload, Sun, UserSquare2, ShieldCheck, CheckCircle2, ScanFace, Scissors } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Sparkles, Upload, Sun, UserSquare2, ShieldCheck, CheckCircle2, ScanFace, Scissors, X, MapPin, Star, Calendar, Clock } from "lucide-react";
 import "../faceanalysis.css";
 
 const SAMPLE_AVATARS = [
@@ -7,21 +7,99 @@ const SAMPLE_AVATARS = [
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
 ];
 
-const HAIRSTYLES = [
-    { name: "Textured Fringe", match: 98, img: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=300&q=80" },
-    { name: "Modern Quiff", match: 94, img: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=300&q=80" },
-    { name: "Classic Taper", match: 89, img: "https://images.unsplash.com/photo-1582230208018-b468ce484b96?auto=format&fit=crop&w=300&q=80" }
-];
-
 function FaceAnalysis() {
+    const [hairstyles, setHairstyles] = useState([]);
+    const [nearbySalons, setNearbySalons] = useState([]);
+
+    useEffect(() => {
+        // Fetch hairstyles and salons
+        fetch('/api/hairstyles')
+            .then(res => res.json())
+            .then(data => setHairstyles(data))
+            .catch(err => console.error("Error fetching hairstyles", err));
+
+        fetch('/api/salons')
+            .then(res => res.json())
+            .then(data => setNearbySalons(data))
+            .catch(err => console.error("Error fetching salons", err));
+    }, []);
+
     const [selectedImage, setSelectedImage] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
     const [scanComplete, setScanComplete] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    
+    // Salon Modal State
+    const [selectedStyle, setSelectedStyle] = useState(null);
+    const [bookingSalon, setBookingSalon] = useState(null);
+    const [bookingSuccess, setBookingSuccess] = useState(false);
+    const [bookingDay, setBookingDay] = useState(0);
+    const [bookingTime, setBookingTime] = useState("10:00 AM");
+
+    const DATES = [
+        { label: "Today", date: "12" },
+        { label: "Wed", date: "13" },
+        { label: "Thu", date: "14" },
+        { label: "Fri", date: "15" },
+        { label: "Sat", date: "16" }
+    ];
+
+    const TIMES = ["9:00 AM", "10:00 AM", "11:30 AM", "1:00 PM", "2:30 PM", "4:00 PM", "5:30 PM"];
+
+    const createdUrlRef = useRef(null);
 
     const handleUpload = (fileOrUrl) => {
-        setSelectedImage(typeof fileOrUrl === 'string' ? fileOrUrl : URL.createObjectURL(fileOrUrl));
-        setIsScanning(true);
+        if (createdUrlRef.current) {
+            URL.revokeObjectURL(createdUrlRef.current);
+            createdUrlRef.current = null;
+        }
+
+        let newUrl = "";
+        if (typeof fileOrUrl === "string") {
+            newUrl = fileOrUrl;
+        } else if (fileOrUrl instanceof File) {
+            newUrl = URL.createObjectURL(fileOrUrl);
+            createdUrlRef.current = newUrl;
+        }
+
+        if (newUrl) {
+            setSelectedImage(newUrl);
+            setIsScanning(true);
+            setScanComplete(false);
+        }
+    };
+
+    const handleReset = () => {
+        if (createdUrlRef.current) {
+            URL.revokeObjectURL(createdUrlRef.current);
+            createdUrlRef.current = null;
+        }
+        setSelectedImage(null);
+        setIsScanning(false);
         setScanComplete(false);
+    };
+
+    // Drag & Drop handlers
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleUpload(e.dataTransfer.files[0]);
+        }
     };
 
     useEffect(() => {
@@ -35,7 +113,7 @@ function FaceAnalysis() {
     }, [isScanning]);
 
     return (
-        <section className="face-analysis">
+        <section className="face-analysis" id="analysis">
             <div className="analysis-grid">
                 <div className="analysis-content">
                     <div className="analysis-badge">
@@ -63,7 +141,12 @@ function FaceAnalysis() {
                 </div>
 
                 <div className="upload-area-wrapper">
-                    <div className={`upload-area ${selectedImage ? 'has-image' : ''}`}>
+                    <div 
+                        className={`upload-area ${selectedImage ? 'has-image' : ''} ${isDragging ? 'is-dragging' : ''}`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                    >
                         {selectedImage ? (
                             <div className="preview-area">
                                 <div className="image-container">
@@ -91,12 +174,18 @@ function FaceAnalysis() {
 
                                 {scanComplete && (
                                     <div className="upload-success">
-                                        <CheckCircle2 size={20} />
-                                        <span>Analysis Complete</span>
+                                        <div className="success-header">
+                                            <CheckCircle2 size={20} />
+                                            <span>Analysis Complete</span>
+                                        </div>
                                         <div className="metrics-tags">
                                             <span className="metric-tag">Shape: Oval</span>
                                             <span className="metric-tag">Density: Medium</span>
+                                            <span className="metric-tag">Symmetry: 98%</span>
                                         </div>
+                                        <button className="reset-photo-btn" onClick={handleReset}>
+                                            Scan Another Photo
+                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -105,14 +194,16 @@ function FaceAnalysis() {
                                 <div className="upload-icon-wrapper">
                                     <Upload className="upload-icon" size={32} />
                                 </div>
-                                <h2 className="upload-title">Drag & drop your photo</h2>
+                                <h2 className="upload-title">
+                                    {isDragging ? "Drop your photo now!" : "Drag & drop your photo"}
+                                </h2>
                                 <p className="upload-or">or</p>
                                 <input
                                     type="file"
                                     accept="image/*"
                                     id="photo-upload"
                                     hidden
-                                    onChange={(e) => handleUpload(e.target.files[0])}
+                                    onChange={(e) => e.target.files[0] && handleUpload(e.target.files[0])}
                                 />
                                 <label htmlFor="photo-upload" className="upload-button">
                                     Choose Photo
@@ -139,20 +230,233 @@ function FaceAnalysis() {
                         <p>Based on your oval face shape and balanced proportions.</p>
                     </div>
                     <div className="results-grid">
-                        {HAIRSTYLES.map((style, i) => (
-                            <div className="result-card" key={i}>
+                        {hairstyles.map((style) => (
+                            <div className="result-card" key={style.id}>
                                 <div className="result-image">
                                     <img src={style.img} alt={style.name} />
                                     <div className="match-badge">{style.match}% Match</div>
                                 </div>
                                 <div className="result-info">
-                                    <h3>{style.name}</h3>
-                                    <button className="book-salon-btn">
+                                    <div>
+                                        <h3>{style.name}</h3>
+                                        <span className="style-category">{style.category}</span>
+                                    </div>
+                                    <button 
+                                        className="book-salon-btn"
+                                        onClick={() => {
+                                            setSelectedStyle(style);
+                                            setBookingSalon(null);
+                                            setBookingSuccess(false);
+                                        }}
+                                    >
                                         <Scissors size={14} /> Find Salon
                                     </button>
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Discover Catalog Section */}
+            <div className="section-block" id="discover">
+                <div className="section-title-wrap">
+                    <span className="section-eyebrow">EXPLORE CATALOG</span>
+                    <h2>Trending Hairstyle Trends</h2>
+                    <p>Curated looks suited for every hair density and texture.</p>
+                </div>
+                <div className="catalog-grid">
+                    {hairstyles.map((style) => (
+                        <div className="catalog-card" key={`cat-${style.id}`}>
+                            <img src={style.img} alt={style.name} />
+                            <div className="catalog-overlay">
+                                <h4>{style.name}</h4>
+                                <span>{style.category} Look</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Salons Showcase Section */}
+            <div className="section-block" id="salons">
+                <div className="section-title-wrap">
+                    <span className="section-eyebrow">TOP PARTNERS</span>
+                    <h2>Verified Salons Near You</h2>
+                    <p>Book with expert stylists specialized in AI precision cuts.</p>
+                </div>
+                <div className="salons-showcase-grid">
+                    {nearbySalons.map((salon) => (
+                        <div className="salon-showcase-card" key={`salon-${salon.id}`}>
+                            <div className="salon-card-header">
+                                <h3>{salon.name}</h3>
+                                <div className="salon-rating">
+                                    <Star size={16} className="star-filled" /> {salon.rating} ({salon.reviews})
+                                </div>
+                            </div>
+                            <p className="salon-address"><MapPin size={14} /> {salon.address} • {salon.distance}</p>
+                            <div className="salon-card-footer">
+                                <span className="salon-price">{salon.price}</span>
+                                <button 
+                                    className="secondary-btn"
+                                    onClick={() => {
+                                        setSelectedStyle(hairstyles[0]);
+                                        setBookingSalon(salon);
+                                        setBookingSuccess(false);
+                                    }}
+                                >
+                                    Book Visit
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* About Section */}
+            <div className="section-block" id="about">
+                <div className="about-card">
+                    <div className="about-content">
+                        <span className="section-eyebrow">ABOUT HAIRLOON</span>
+                        <h2>AI Precision Meets Master Barbering</h2>
+                        <p>
+                            Hairloon was built to replace guesswork with data-driven style confidence.
+                            Our proprietary algorithm evaluates facial ratios, cheekbone width, and hair growth patterns to unlock your personal aesthetic potential.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Salon Booking Modal */}
+            {selectedStyle && (
+                <div className="modal-backdrop" onClick={() => setSelectedStyle(null)}>
+                    <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setSelectedStyle(null)}>
+                            <X size={20} />
+                        </button>
+
+                        {!bookingSalon ? (
+                            <>
+                                <div className="modal-header">
+                                    <h2>Find Salon for {selectedStyle.name}</h2>
+                                    <p>Select a verified partner salon to execute this style.</p>
+                                </div>
+                                <div className="salons-list">
+                                    {nearbySalons.map((salon) => (
+                                        <div className="salon-item" key={salon.id}>
+                                            <div className="salon-details">
+                                                <h4>{salon.name}</h4>
+                                                <div className="salon-meta">
+                                                    <span><Star size={14} className="star-filled" /> {salon.rating} ({salon.reviews})</span>
+                                                    <span><MapPin size={14} /> {salon.distance}</span>
+                                                </div>
+                                                <p className="salon-subtext">{salon.address} • {salon.price}</p>
+                                            </div>
+                                            <button 
+                                                className="book-btn"
+                                                onClick={() => setBookingSalon(salon)}
+                                            >
+                                                Select
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="booking-form-area">
+                                {!bookingSuccess ? (
+                                    <>
+                                        <div className="booking-summary-card">
+                                            <img src={selectedStyle.img} alt={selectedStyle.name} className="booking-summary-img" />
+                                            <div className="booking-summary-info">
+                                                <h4>{selectedStyle.name}</h4>
+                                                <p>at {bookingSalon.name}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="booking-section-title">
+                                            <Calendar size={16} /> Choose Date
+                                        </div>
+                                        <div className="booking-dates">
+                                            {DATES.map((d, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className={`date-pill ${bookingDay === index ? 'selected' : ''}`}
+                                                    onClick={() => setBookingDay(index)}
+                                                >
+                                                    <span>{d.label}</span>
+                                                    <span>{d.date}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="booking-section-title">
+                                            <Clock size={16} /> Available Times
+                                        </div>
+                                        <div className="time-slots">
+                                            {TIMES.map((time, index) => (
+                                                <div 
+                                                    key={index} 
+                                                    className={`time-pill ${bookingTime === time ? 'selected' : ''}`}
+                                                    onClick={() => setBookingTime(time)}
+                                                >
+                                                    {time}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <button 
+                                            className="confirm-booking-btn"
+                                            onClick={async () => {
+                                                try {
+                                                    const userStr = localStorage.getItem('hairloon_user');
+                                                    if (!userStr) {
+                                                        alert("Please login first");
+                                                        return;
+                                                    }
+                                                    const user = JSON.parse(userStr);
+                                                    const selectedDateStr = `${DATES[bookingDay].label}, ${DATES[bookingDay].date} at ${bookingTime}`;
+                                                    const response = await fetch('/api/appointments', {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({
+                                                            userId: user.id,
+                                                            salonId: bookingSalon.id,
+                                                            styleId: selectedStyle.id,
+                                                            date: selectedDateStr
+                                                        })
+                                                    });
+                                                    
+                                                    if (response.ok) {
+                                                        setBookingSuccess(true);
+                                                    } else {
+                                                        const err = await response.json();
+                                                        alert("Error: " + err.error);
+                                                    }
+                                                } catch(e) {
+                                                    console.error(e);
+                                                    alert("Failed to book appointment");
+                                                }
+                                            }}
+                                        >
+                                            Confirm Appointment
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="booking-success-view">
+                                        <CheckCircle2 size={48} className="success-icon-lg" />
+                                        <h2>Appointment Confirmed!</h2>
+                                        <p>You're booked at <strong>{bookingSalon.name}</strong> for <strong>{selectedStyle.name}</strong> on {DATES[bookingDay].label}, {DATES[bookingDay].date} at {bookingTime}.</p>
+                                        <button 
+                                            className="confirm-booking-btn"
+                                            onClick={() => setSelectedStyle(null)}
+                                        >
+                                            Done
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

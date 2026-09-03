@@ -1,14 +1,21 @@
 import { useState } from "react";
+import { Sparkles } from "lucide-react";
 import "../App.css";
-function Hero() {
 
+function Hero() {
   const [analysisStarted, setAnalysisStarted] = useState(false);
 
+  const handleAnalyseClick = () => {
+    setAnalysisStarted(true);
+    const analysisElement = document.getElementById("analysis");
+    if (analysisElement) {
+      analysisElement.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <section className="hero">
-
+    <section className="hero" id="hero">
       <div className="hero-content">
-
         <p className="hero-eyebrow">
           YOUR STYLE. YOUR CONFIDENCE.
         </p>
@@ -21,25 +28,21 @@ function Hero() {
 
         <p className="hero-description">
           Discover hairstyles that match your features
-          and find salons near you.
+          and find top-rated salons near you.
         </p>
 
         <button
           className="hero-button"
-          onClick={() => setAnalysisStarted(true)}
+          onClick={handleAnalyseClick}
         >
-          {analysisStarted ? "Analysis Started" : "Analyse My Face"}
+          {analysisStarted ? "Scroll to Analysis" : "Analyse My Face"}
         </button>
-
       </div>
 
-
       <div className="hero-visual">
-
         <div className="analysis-card">
-
           <div className="analysis-icon">
-            ✦
+            <Sparkles size={24} />
           </div>
 
           <p className="analysis-label">
@@ -55,15 +58,10 @@ function Hero() {
           <div className="analysis-line"></div>
 
           <p className="analysis-status">
-            {analysisStarted
-              ? "Analysis started"
-              : "Ready to analyse"}
+            {analysisStarted ? "Analysis started" : "Ready to analyse"}
           </p>
-
         </div>
-
       </div>
-
     </section>
   );
 }

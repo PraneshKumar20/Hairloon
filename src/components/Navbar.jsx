@@ -1,13 +1,25 @@
 import { useState, useEffect } from "react";
-import { Sparkles, Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Menu, X, LogOut, User } from "lucide-react";
 import logoImg from "../assets/Gemini_Generated_Image_8d1uvz8d1uvz8d1u-removebg-preview.png";
 
 function Navbar() {
+    const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [activeLink, setActiveLink] = useState("Home");
     const [scrolled, setScrolled] = useState(false);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
+        const storedUser = localStorage.getItem("hairloon_user");
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
@@ -15,33 +27,75 @@ function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleNavClick = (link) => {
-        setActiveLink(link);
+    const scrollToSection = (sectionId) => {
+        setActiveLink(sectionId);
         setMenuOpen(false);
+
+        const targetId = sectionId.toLowerCase();
+        const element = document.getElementById(targetId);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("hairloon_user");
+        navigate("/login");
     };
 
     return (
         <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
-            <div className="logo">
+            <div className="logo" onClick={() => scrollToSection("Home")} style={{ cursor: "pointer" }}>
                 <img src={logoImg} alt="Hairloon Logo" className="logo-image" />
             </div>
 
             <div className={`nav-links ${menuOpen ? "open" : ""}`}>
-                {["Home", "Discover", "Salons", "About"].map((link) => (
+                {[
+                    { label: "Home", id: "analysis" },
+                    { label: "Discover", id: "discover" },
+                    { label: "Salons", id: "salons" },
+                    { label: "About", id: "about" }
+                ].map((item) => (
                     <a
-                        key={link}
-                        href="#"
-                        className={activeLink === link ? "active" : ""}
-                        onClick={(e) => { e.preventDefault(); handleNavClick(link); }}
+                        key={item.label}
+                        href={`#${item.id}`}
+                        className={activeLink === item.label ? "active" : ""}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            scrollToSection(item.id);
+                        }}
                     >
-                        {link}
+                        {item.label}
                     </a>
                 ))}
+
+                {user && (
+                    <div className="mobile-user-actions">
+                        <span className="user-name-tag"><User size={14} /> {user.name}</span>
+                        <button className="nav-logout-btn" onClick={handleLogout}>
+                            <LogOut size={14} /> Log Out
+                        </button>
+                    </div>
+                )}
             </div>
 
-            <button className="nav-button">
-                Get Started
-            </button>
+            <div className="nav-actions">
+                {user ? (
+                    <div className="user-profile-pill">
+                        <span className="user-greeting">Hi, {user.name}</span>
+                        <button className="nav-logout-btn" onClick={handleLogout} title="Log Out">
+                            <LogOut size={16} />
+                        </button>
+                    </div>
+                ) : (
+                    <button className="nav-button" onClick={() => scrollToSection("analysis")}>
+                        Get Started
+                    </button>
+                )}
+            </div>
+
             <button
                 className="menu-toggle"
                 onClick={() => setMenuOpen(!menuOpen)}
