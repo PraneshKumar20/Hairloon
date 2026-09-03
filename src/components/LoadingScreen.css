@@ -1,103 +1,56 @@
 /* ==========================================================================
-   CINEMATIC MONOCHROME LOADING SCREEN — HAIRLOON EDITORIAL
+   HAIRLOON LUXURY LOADING EXPERIENCE
    ========================================================================== */
 
-.cinematic-loader {
+.hairloon-loader-root {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: 10000;
-    background: #080808;
+    background: #09090b;
     color: #ffffff;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    overflow: hidden;
+    padding: 24px;
     opacity: 1;
-    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: loaderFadeIn 0.35s ease-out forwards;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: loaderScreenFadeIn 0.35s ease-out forwards;
 }
 
-@keyframes loaderFadeIn {
+@keyframes loaderScreenFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-.cinematic-loader.loader-exit {
+.hairloon-loader-root.loader-fade-out {
     opacity: 0;
     transform: scale(1.015);
     pointer-events: none;
 }
 
 /* --------------------------------------------------------------------------
-   Editorial Corner Watermarks
+   Centered Brand & Gauge
    -------------------------------------------------------------------------- */
-.loader-corner {
-    position: absolute;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    color: #4a4a4a;
-    text-transform: uppercase;
-    pointer-events: none;
-    user-select: none;
-    font-family: 'Inter', monospace, sans-serif;
-}
-
-.loader-corner.top-left {
-    top: 36px;
-    left: 48px;
-}
-
-.loader-corner.top-right {
-    top: 36px;
-    right: 48px;
-}
-
-.loader-corner.bottom-left {
-    bottom: 36px;
-    left: 48px;
-}
-
-.loader-corner.bottom-right {
-    bottom: 36px;
-    right: 48px;
-}
-
-@media (max-width: 768px) {
-    .loader-corner {
-        font-size: 9px;
-        letter-spacing: 0.12em;
-    }
-    .loader-corner.top-left { top: 20px; left: 20px; }
-    .loader-corner.top-right { top: 20px; right: 20px; }
-    .loader-corner.bottom-left { bottom: 20px; left: 20px; }
-    .loader-corner.bottom-right { bottom: 20px; right: 20px; }
-}
-
-/* --------------------------------------------------------------------------
-   Central Composition
-   -------------------------------------------------------------------------- */
-.loader-core {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    padding: 0 32px;
+.loader-center-content {
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    text-align: left;
-    animation: coreReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+    animation: loaderContentRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes coreReveal {
+@keyframes loaderContentRise {
     from {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(14px);
     }
     to {
         opacity: 1;
@@ -105,53 +58,64 @@
     }
 }
 
-/* Brand Header */
-.loader-brand-header {
-    margin-bottom: 40px;
+.loader-brand-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 36px;
 }
 
-.loader-brand-mark {
-    height: 38px;
+.loader-brand-emblem {
+    height: 48px;
     width: auto;
     object-fit: contain;
-    margin-bottom: 20px;
-    filter: grayscale(100%) brightness(1.8) contrast(1.2);
-    opacity: 0.95;
+    filter: brightness(2) contrast(1.1);
+    margin-bottom: 18px;
+    animation: emblemPulse 2.4s ease-in-out infinite alternate;
 }
 
-.loader-wordmark {
+@keyframes emblemPulse {
+    0% { transform: scale(0.98); opacity: 0.85; }
+    100% { transform: scale(1.02); opacity: 1; }
+}
+
+.loader-brand-title {
     font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    letter-spacing: 0.32em;
+    letter-spacing: 0.28em;
     color: #ffffff;
-    line-height: 1;
-    margin-bottom: 10px;
+    margin: 0 0 6px;
     text-transform: uppercase;
 }
 
-.loader-submark {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    color: #666666;
+.loader-brand-tagline {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: #71717a;
     text-transform: uppercase;
+    margin: 0;
 }
 
-/* Thin Hairline Progress Indicator */
-.loader-hairline-track {
+/* Precision Gauge */
+.loader-gauge-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.loader-gauge-rail {
     width: 100%;
     height: 1px;
-    background: #1c1c1c;
+    background: #27272a;
     position: relative;
-    margin-bottom: 20px;
     overflow: hidden;
+    margin-bottom: 16px;
 }
 
-.loader-hairline-fill {
+.loader-gauge-fill {
     height: 100%;
     background: #ffffff;
     position: absolute;
@@ -160,56 +124,61 @@
     transition: width 0.04s linear;
 }
 
-/* Status Row: Phase & Percentage */
-.loader-status-row {
+.loader-meta-row {
     display: flex;
-    align-items: baseline;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 8px;
-}
-
-.loader-status-info {
-    display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 16px;
+    margin-bottom: 6px;
 }
 
-.loader-phase-tag {
-    font-size: 11px;
+.loader-stage-name {
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.14em;
-    color: #555555;
-    font-family: monospace, sans-serif;
-}
-
-.loader-phase-title {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: #eaeaea;
+    color: #e4e4e7;
     text-transform: uppercase;
+    text-align: left;
 }
 
-.loader-counter {
+.loader-percentage {
     font-family: 'Inter', monospace, sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     color: #ffffff;
+    letter-spacing: 0.04em;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.05em;
 }
 
-.counter-unit {
-    font-size: 10px;
-    color: #666666;
-    margin-left: 2px;
+.loader-subtext {
+    font-size: 11px;
+    color: #71717a;
+    margin: 0;
+    text-align: left;
+    min-height: 16px;
+    letter-spacing: 0.01em;
 }
 
-.loader-detail-text {
-    font-size: 12px;
-    color: #5a5a5a;
-    letter-spacing: 0.02em;
-    line-height: 1.4;
-    min-height: 18px;
+/* --------------------------------------------------------------------------
+   Bottom Note
+   -------------------------------------------------------------------------- */
+.loader-bottom-note {
+    position: absolute;
+    bottom: 36px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: #52525b;
+    text-transform: uppercase;
+    text-align: center;
+    user-select: none;
+    pointer-events: none;
+}
+
+@media (max-width: 480px) {
+    .loader-bottom-note {
+        bottom: 24px;
+        font-size: 8px;
+        letter-spacing: 0.16em;
+    }
 }

@@ -2,20 +2,20 @@ import { useState, useEffect } from "react";
 import logoImg from "../assets/Gemini_Generated_Image_8d1uvz8d1uvz8d1u-removebg-preview.png";
 import "./LoadingScreen.css";
 
-const PHASES = [
-    { threshold: 0, code: "PHASE 01", title: "INITIALIZING CLIENT PROTOCOL", detail: "Securing local session sandbox" },
-    { threshold: 28, code: "PHASE 02", title: "CALIBRATING FACIAL TOPOLOGY", detail: "Aligning cranial geometry presets" },
-    { threshold: 60, code: "PHASE 03", title: "SYNCHRONIZING VERIFIED ATELIERS", detail: "Mapping bespoke salon availability" },
-    { threshold: 88, code: "PHASE 04", title: "STUDIO READY", detail: "Entering precision grooming catalog" }
+const STATUS_STAGES = [
+    { threshold: 0, title: "INITIALIZING DIAGNOSTIC SUITE", desc: "Setting up your personal profile" },
+    { threshold: 30, title: "CALIBRATING FACIAL GEOMETRY", desc: "Preparing AI hair topology models" },
+    { threshold: 65, title: "SYNCHRONIZING SALON ATELIERS", desc: "Retrieving verified partner stylist availability" },
+    { threshold: 90, title: "FINALIZING BESPOKE CATALOG", desc: "Welcome to Hairloon" }
 ];
 
-function LoadingScreen({ onComplete, duration = 2200 }) {
+function LoadingScreen({ onComplete, duration = 2000 }) {
     const [progress, setProgress] = useState(0);
-    const [currentPhase, setCurrentPhase] = useState(PHASES[0]);
-    const [isExiting, setIsExiting] = useState(false);
+    const [currentStage, setCurrentStage] = useState(STATUS_STAGES[0]);
+    const [isFadingOut, setIsFadingOut] = useState(false);
 
     useEffect(() => {
-        const intervalTime = 25;
+        const intervalTime = 20;
         const step = 100 / (duration / intervalTime);
 
         const timer = setInterval(() => {
@@ -23,16 +23,16 @@ function LoadingScreen({ onComplete, duration = 2200 }) {
                 const next = prev + step;
                 if (next >= 100) {
                     clearInterval(timer);
-                    setIsExiting(true);
+                    setIsFadingOut(true);
                     setTimeout(() => {
                         if (onComplete) onComplete();
-                    }, 450);
+                    }, 400);
                     return 100;
                 }
 
-                const matched = [...PHASES].reverse().find(p => next >= p.threshold);
-                if (matched) {
-                    setCurrentPhase(matched);
+                const stage = [...STATUS_STAGES].reverse().find(s => next >= s.threshold);
+                if (stage) {
+                    setCurrentStage(stage);
                 }
 
                 return next;
@@ -45,51 +45,42 @@ function LoadingScreen({ onComplete, duration = 2200 }) {
     const formattedPercent = Math.min(Math.round(progress), 100).toString().padStart(2, "0");
 
     return (
-        <aside 
-            className={`cinematic-loader ${isExiting ? "loader-exit" : ""}`}
-            aria-label="Hairloon is preparing your experience"
+        <div 
+            className={`hairloon-loader-root ${isFadingOut ? "loader-fade-out" : ""}`}
+            role="status" 
             aria-live="polite"
         >
-            {/* Minimal Editorial Corner Annotations */}
-            <div className="loader-corner top-left">HAIRLOON // STUDIO</div>
-            <div className="loader-corner top-right">SYS // AUTONOMOUS 2.4</div>
-            <div className="loader-corner bottom-left">LAT 40.7128° N — LON 74.0060° W</div>
-            <div className="loader-corner bottom-right">PRECISION GROOMING</div>
-
-            {/* Central Monochromatic Composition */}
-            <div className="loader-core">
-                {/* Wordmark & Brand Seal */}
-                <div className="loader-brand-header">
-                    <img src={logoImg} alt="Hairloon" className="loader-brand-mark" />
-                    <div className="loader-wordmark">HAIRLOON</div>
-                    <div className="loader-submark">PRECISION GROOMING ARCHITECTURE</div>
+            <div className="loader-center-content">
+                {/* Brand Identity */}
+                <div className="loader-brand-wrapper">
+                    <img src={logoImg} alt="Hairloon" className="loader-brand-emblem" />
+                    <h1 className="loader-brand-title">HAIRLOON</h1>
+                    <p className="loader-brand-tagline">PRECISION GROOMING PLATFORM</p>
                 </div>
 
-                {/* Expanding Thin Hairline Progress Indicator */}
-                <div className="loader-hairline-track">
-                    <div 
-                        className="loader-hairline-fill" 
-                        style={{ width: `${Math.min(progress, 100)}%` }}
-                    />
-                </div>
-
-                {/* Status Ticker & Monospace Percent Counter */}
-                <div className="loader-status-row">
-                    <div className="loader-status-info">
-                        <span className="loader-phase-tag">{currentPhase.code}</span>
-                        <span className="loader-phase-title">{currentPhase.title}</span>
+                {/* Minimal Precision Gauge */}
+                <div className="loader-gauge-container">
+                    <div className="loader-gauge-rail">
+                        <div 
+                            className="loader-gauge-fill" 
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                        />
                     </div>
-                    <div className="loader-counter">
-                        <span className="counter-num">{formattedPercent}</span>
-                        <span className="counter-unit">%</span>
-                    </div>
-                </div>
 
-                <div className="loader-detail-text">
-                    {currentPhase.detail}
+                    <div className="loader-meta-row">
+                        <span className="loader-stage-name">{currentStage.title}</span>
+                        <span className="loader-percentage">{formattedPercent}%</span>
+                    </div>
+
+                    <p className="loader-subtext">{currentStage.desc}</p>
                 </div>
             </div>
-        </aside>
+
+            {/* Subtle Editorial Footer Line */}
+            <div className="loader-bottom-note">
+                <span>PREPARING YOUR PERSONALIZED EXPERIENCE</span>
+            </div>
+        </div>
     );
 }
 
