@@ -1,0 +1,215 @@
+/* ==========================================================================
+   CINEMATIC MONOCHROME LOADING SCREEN — HAIRLOON EDITORIAL
+   ========================================================================== */
+
+.cinematic-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10000;
+    background: #080808;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: loaderFadeIn 0.35s ease-out forwards;
+}
+
+@keyframes loaderFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.cinematic-loader.loader-exit {
+    opacity: 0;
+    transform: scale(1.015);
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Editorial Corner Watermarks
+   -------------------------------------------------------------------------- */
+.loader-corner {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: #4a4a4a;
+    text-transform: uppercase;
+    pointer-events: none;
+    user-select: none;
+    font-family: 'Inter', monospace, sans-serif;
+}
+
+.loader-corner.top-left {
+    top: 36px;
+    left: 48px;
+}
+
+.loader-corner.top-right {
+    top: 36px;
+    right: 48px;
+}
+
+.loader-corner.bottom-left {
+    bottom: 36px;
+    left: 48px;
+}
+
+.loader-corner.bottom-right {
+    bottom: 36px;
+    right: 48px;
+}
+
+@media (max-width: 768px) {
+    .loader-corner {
+        font-size: 9px;
+        letter-spacing: 0.12em;
+    }
+    .loader-corner.top-left { top: 20px; left: 20px; }
+    .loader-corner.top-right { top: 20px; right: 20px; }
+    .loader-corner.bottom-left { bottom: 20px; left: 20px; }
+    .loader-corner.bottom-right { bottom: 20px; right: 20px; }
+}
+
+/* --------------------------------------------------------------------------
+   Central Composition
+   -------------------------------------------------------------------------- */
+.loader-core {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    animation: coreReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes coreReveal {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Brand Header */
+.loader-brand-header {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.loader-brand-mark {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 20px;
+    filter: grayscale(100%) brightness(1.8) contrast(1.2);
+    opacity: 0.95;
+}
+
+.loader-wordmark {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.loader-submark {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    color: #666666;
+    text-transform: uppercase;
+}
+
+/* Thin Hairline Progress Indicator */
+.loader-hairline-track {
+    width: 100%;
+    height: 1px;
+    background: #1c1c1c;
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.loader-hairline-fill {
+    height: 100%;
+    background: #ffffff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: width 0.04s linear;
+}
+
+/* Status Row: Phase & Percentage */
+.loader-status-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.loader-status-info {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.loader-phase-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: #555555;
+    font-family: monospace, sans-serif;
+}
+
+.loader-phase-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: #eaeaea;
+    text-transform: uppercase;
+}
+
+.loader-counter {
+    font-family: 'Inter', monospace, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.05em;
+}
+
+.counter-unit {
+    font-size: 10px;
+    color: #666666;
+    margin-left: 2px;
+}
+
+.loader-detail-text {
+    font-size: 12px;
+    color: #5a5a5a;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    min-height: 18px;
+}

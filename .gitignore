@@ -28,5 +28,6 @@ dist-ssr
 .env.*
 !.env.example
 
-# Local database
+# Local database and archives
 backend/database.sqlite
+.archive/

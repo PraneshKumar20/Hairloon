@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Sparkles, Upload, Sun, UserSquare2, ShieldCheck, CheckCircle2, ScanFace, Scissors, X, MapPin, Star, Calendar, Clock } from "lucide-react";
+import { INITIAL_HAIRSTYLES, INITIAL_SALONS } from "../data/mockData";
 import "../faceanalysis.css";
 
 const SAMPLE_AVATARS = [
@@ -8,21 +9,8 @@ const SAMPLE_AVATARS = [
 ];
 
 function FaceAnalysis() {
-    const [hairstyles, setHairstyles] = useState([]);
-    const [nearbySalons, setNearbySalons] = useState([]);
-
-    useEffect(() => {
-        // Fetch hairstyles and salons
-        fetch('/api/hairstyles')
-            .then(res => res.json())
-            .then(data => setHairstyles(data))
-            .catch(err => console.error("Error fetching hairstyles", err));
-
-        fetch('/api/salons')
-            .then(res => res.json())
-            .then(data => setNearbySalons(data))
-            .catch(err => console.error("Error fetching salons", err));
-    }, []);
+    const [hairstyles] = useState(INITIAL_HAIRSTYLES);
+    const [nearbySalons] = useState(INITIAL_SALONS);
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
@@ -407,36 +395,22 @@ function FaceAnalysis() {
 
                                         <button 
                                             className="confirm-booking-btn"
-                                            onClick={async () => {
+                                            onClick={() => {
+                                                const selectedDateStr = `${DATES[bookingDay].label}, ${DATES[bookingDay].date} at ${bookingTime}`;
+                                                const newAppointment = {
+                                                    id: Date.now(),
+                                                    salon: bookingSalon.name,
+                                                    style: selectedStyle.name,
+                                                    date: selectedDateStr,
+                                                    bookedAt: new Date().toISOString()
+                                                };
                                                 try {
-                                                    const userStr = localStorage.getItem('hairloon_user');
-                                                    if (!userStr) {
-                                                        alert("Please login first");
-                                                        return;
-                                                    }
-                                                    const user = JSON.parse(userStr);
-                                                    const selectedDateStr = `${DATES[bookingDay].label}, ${DATES[bookingDay].date} at ${bookingTime}`;
-                                                    const response = await fetch('/api/appointments', {
-                                                        method: 'POST',
-                                                        headers: { 'Content-Type': 'application/json' },
-                                                        body: JSON.stringify({
-                                                            userId: user.id,
-                                                            salonId: bookingSalon.id,
-                                                            styleId: selectedStyle.id,
-                                                            date: selectedDateStr
-                                                        })
-                                                    });
-                                                    
-                                                    if (response.ok) {
-                                                        setBookingSuccess(true);
-                                                    } else {
-                                                        const err = await response.json();
-                                                        alert("Error: " + err.error);
-                                                    }
-                                                } catch(e) {
+                                                    const existing = JSON.parse(localStorage.getItem('hairloon_appointments') || '[]');
+                                                    localStorage.setItem('hairloon_appointments', JSON.stringify([...existing, newAppointment]));
+                                                } catch (e) {
                                                     console.error(e);
-                                                    alert("Failed to book appointment");
                                                 }
+                                                setBookingSuccess(true);
                                             }}
                                         >
                                             Confirm Appointment

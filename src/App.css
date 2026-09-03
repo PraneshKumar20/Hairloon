@@ -63,7 +63,7 @@
   left: 0;
   width: 0;
   height: 1px;
-  background-color: #8b5cf6;
+  background-color: #171717;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -95,9 +95,9 @@
 }
 
 .nav-button:hover {
-  background: var(--primary-accent, #7c4dfa);
+  background: #2a2a2a;
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px -8px var(--primary-glow, rgba(124, 77, 250, 0.6));
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.25);
 }
 .nav-links a.active {
   color: #171717;
@@ -114,23 +114,23 @@
   width: 100%;
   height: 2px;
 
-  background: #8b5cf6;
+  background: #171717;
   border-radius: 10px;
 }
 .user-profile-pill {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(124, 77, 250, 0.08);
-  border: 1px solid rgba(124, 77, 250, 0.2);
-  padding: 8px 16px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  padding: 6px 14px;
   border-radius: 999px;
 }
 
 .user-greeting {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-dark);
+  color: #18181b;
 }
 
 .nav-logout-btn {
@@ -139,15 +139,16 @@
   justify-content: center;
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: #71717a;
   cursor: pointer;
-  padding: 6px;
+  padding: 4px;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .nav-logout-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: #e4e4e7;
+  color: #18181b;
 }
 
 .mobile-user-actions {

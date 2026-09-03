@@ -75,7 +75,7 @@ function Navbar() {
                     <div className="mobile-user-actions">
                         <span className="user-name-tag"><User size={14} /> {user.name}</span>
                         <button className="nav-logout-btn" onClick={handleLogout}>
-                            <LogOut size={14} /> Log Out
+                            <LogOut size={14} /> Sign Out
                         </button>
                     </div>
                 )}
@@ -85,13 +85,13 @@ function Navbar() {
                 {user ? (
                     <div className="user-profile-pill">
                         <span className="user-greeting">Hi, {user.name}</span>
-                        <button className="nav-logout-btn" onClick={handleLogout} title="Log Out">
+                        <button className="nav-logout-btn" onClick={handleLogout} title="Sign Out">
                             <LogOut size={16} />
                         </button>
                     </div>
                 ) : (
-                    <button className="nav-button" onClick={() => scrollToSection("analysis")}>
-                        Get Started
+                    <button className="nav-button" onClick={() => navigate("/login")}>
+                        Sign In
                     </button>
                 )}
             </div>
@@ -99,6 +99,7 @@ function Navbar() {
             <button
                 className="menu-toggle"
                 onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle Navigation Menu"
             >
                 {menuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
