@@ -1,10 +1,13 @@
 # Hairloon — AI Salon Discovery & Styling
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Hairloon-7df9e5?style=for-the-badge&logo=vercel&logoColor=040714)](https://hairloon-demo.vercel.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-PraneshKumar20-a58bff?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PraneshKumar20/Hairloon)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Raju%20Pranesh%20Kumar-0ea5e9?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/raju-pranesh-kumar)
 [![LeetCode](https://img.shields.io/badge/LeetCode-300%2B%20Problems-FFA116?style=for-the-badge&logo=leetcode&logoColor=black)](https://leetcode.com/u/praneshkumar20/)
 
 A sleek, AI-powered web application that helps users discover the perfect hairstyles based on their facial geometry and seamlessly connects them with top-rated local salons. Designed with luxury monochrome aesthetics and cinematic loading experiences.
+
+🌐 **Live URL:** [https://hairloon-demo.vercel.app/](https://hairloon-demo.vercel.app/)
 
 ---
 
