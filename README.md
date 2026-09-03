@@ -1,16 +1,85 @@
-# React + Vite
+# Hairloon 💇‍♂️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> AI-powered hairstyle recommendation and salon discovery platform.
 
-Currently, two official plugins are available:
+Hairloon is a full-stack web application that helps users discover
+hairstyles based on their face shape and find suitable salons for
+getting their preferred hairstyle.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Features
 
-## React Compiler
+- 🔍 Face shape analysis
+- 💇 Hairstyle recommendations
+- 🏪 Salon discovery
+- ⭐ Salon ratings and reviews
+- 🔐 User registration and login
+- 📅 Appointment booking
+- 📱 Responsive user interface
+- 🗄️ Backend database management
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🖥️ Screenshots
 
-## Expanding the ESLint configuration
+### Home Page
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+![Hairloon Home](./screenshots/home.png)
+
+### Face Shape Analysis
+
+![Face Analysis](./screenshots/face-analysis.png)
+
+### Hairstyle Recommendations
+
+![Recommendations](./screenshots/recommendations.png)
+
+### Salon Discovery
+
+![Salons](./screenshots/salons.png)
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React
+- Vite
+- JavaScript
+- CSS
+- React Router
+- Lucide React
+
+### Backend
+
+- Node.js
+- Express.js
+- REST API
+
+### Database
+
+- SQLite
+
+### Tools
+
+- Git
+- GitHub
+- VS Code
+
+## 🏗️ Project Architecture
+
+```text
+                    Hairloon
+                       │
+              ┌────────┴────────┐
+              │                 │
+           Frontend           Backend
+          React + Vite      Node + Express
+              │                 │
+              │              REST API
+              │                 │
+              └────────┬────────┘
+                       │
+                    SQLite
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+        Users      Hairstyles    Salons
+                       │
+                  Appointments
