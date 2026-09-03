@@ -17,24 +17,6 @@ getting their preferred hairstyle.
 - 📱 Responsive user interface
 - 🗄️ Backend database management
 
-## 🖥️ Screenshots
-
-### Home Page
-
-![Hairloon Home](./screenshots/home.png)
-
-### Face Shape Analysis
-
-![Face Analysis](./screenshots/face-analysis.png)
-
-### Hairstyle Recommendations
-
-![Recommendations](./screenshots/recommendations.png)
-
-### Salon Discovery
-
-![Salons](./screenshots/salons.png)
-
 ## 🛠️ Tech Stack
 
 ### Frontend
