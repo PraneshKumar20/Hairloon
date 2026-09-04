@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Eye, EyeOff, AlertCircle, X, Check } from "lucide-react";
 import logoImg from "../assets/Gemini_Generated_Image_8d1uvz8d1uvz8d1u-removebg-preview.png";
 import LoadingScreen from "./LoadingScreen";
-import { useTilt } from "../hooks/useTilt";
 import "./Login.css";
 
 function Login() {
     const navigate = useNavigate();
-    const tiltRef = useTilt({ maxTilt: 16, yOffset: -4 });
 
     const [isSignUp, setIsSignUp] = useState(false);
     const [name, setName] = useState("");
@@ -97,7 +95,7 @@ function Login() {
             )}
 
             <main className="auth-card-container">
-                <div className="auth-card" ref={tiltRef}>
+                <div className="auth-card">
                     {/* 1. Hairloon Brand Emblem */}
                     <div className="auth-brand-row stagger-1">
                         <img src={logoImg} alt="Hairloon" className="auth-brand-logo" />

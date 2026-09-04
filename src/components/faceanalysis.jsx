@@ -1,74 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Sparkles, Upload, Sun, UserSquare2, ShieldCheck, CheckCircle2, ScanFace, Scissors, X, MapPin, Star, Calendar, Clock } from "lucide-react";
 import { INITIAL_HAIRSTYLES, INITIAL_SALONS } from "../data/mockData";
-import { useTilt } from "../hooks/useTilt";
 import "../faceanalysis.css";
 
 const SAMPLE_AVATARS = [
     "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&q=80",
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
 ];
-
-function ResultCardItem({ styleData, onBook }) {
-    const tiltRef = useTilt({ maxTilt: 16, yOffset: -4 });
-    return (
-        <div className="result-card" ref={tiltRef}>
-            <div className="result-image">
-                <img src={styleData.img} alt={styleData.name} />
-                <div className="match-badge">{styleData.match}% Match</div>
-            </div>
-            <div className="result-info">
-                <div>
-                    <h3>{styleData.name}</h3>
-                    <span className="style-category">{styleData.category}</span>
-                </div>
-                <button 
-                    className="book-salon-btn"
-                    onClick={onBook}
-                >
-                    <Scissors size={14} /> Find Salon
-                </button>
-            </div>
-        </div>
-    );
-}
-
-function CatalogCardItem({ styleData }) {
-    const tiltRef = useTilt({ maxTilt: 16, yOffset: -4 });
-    return (
-        <div className="catalog-card" ref={tiltRef}>
-            <img src={styleData.img} alt={styleData.name} />
-            <div className="catalog-overlay">
-                <h4>{styleData.name}</h4>
-                <span>{styleData.category} Look</span>
-            </div>
-        </div>
-    );
-}
-
-function SalonCardItem({ salon, onBook }) {
-    const tiltRef = useTilt({ maxTilt: 16, yOffset: -4 });
-    return (
-        <div className="salon-showcase-card" ref={tiltRef}>
-            <div className="salon-card-header">
-                <h3>{salon.name}</h3>
-                <div className="salon-rating">
-                    <Star size={16} className="star-filled" /> {salon.rating} ({salon.reviews})
-                </div>
-            </div>
-            <p className="salon-address"><MapPin size={14} /> {salon.address} • {salon.distance}</p>
-            <div className="salon-card-footer">
-                <span className="salon-price">{salon.price}</span>
-                <button 
-                    className="secondary-btn"
-                    onClick={onBook}
-                >
-                    Book Visit
-                </button>
-            </div>
-        </div>
-    );
-}
 
 function FaceAnalysis() {
     const [hairstyles] = useState(INITIAL_HAIRSTYLES);
@@ -281,15 +219,28 @@ function FaceAnalysis() {
                     </div>
                     <div className="results-grid">
                         {hairstyles.map((style) => (
-                            <ResultCardItem 
-                                key={style.id}
-                                styleData={style}
-                                onBook={() => {
-                                    setSelectedStyle(style);
-                                    setBookingSalon(null);
-                                    setBookingSuccess(false);
-                                }}
-                            />
+                            <div className="result-card" key={style.id}>
+                                <div className="result-image">
+                                    <img src={style.img} alt={style.name} />
+                                    <div className="match-badge">{style.match}% Match</div>
+                                </div>
+                                <div className="result-info">
+                                    <div>
+                                        <h3>{style.name}</h3>
+                                        <span className="style-category">{style.category}</span>
+                                    </div>
+                                    <button 
+                                        className="book-salon-btn"
+                                        onClick={() => {
+                                            setSelectedStyle(style);
+                                            setBookingSalon(null);
+                                            setBookingSuccess(false);
+                                        }}
+                                    >
+                                        <Scissors size={14} /> Find Salon
+                                    </button>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -304,10 +255,13 @@ function FaceAnalysis() {
                 </div>
                 <div className="catalog-grid">
                     {hairstyles.map((style) => (
-                        <CatalogCardItem 
-                            key={`cat-${style.id}`}
-                            styleData={style}
-                        />
+                        <div className="catalog-card" key={`cat-${style.id}`}>
+                            <img src={style.img} alt={style.name} />
+                            <div className="catalog-overlay">
+                                <h4>{style.name}</h4>
+                                <span>{style.category} Look</span>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -321,15 +275,28 @@ function FaceAnalysis() {
                 </div>
                 <div className="salons-showcase-grid">
                     {nearbySalons.map((salon) => (
-                        <SalonCardItem 
-                            key={`salon-${salon.id}`}
-                            salon={salon}
-                            onBook={() => {
-                                setSelectedStyle(hairstyles[0]);
-                                setBookingSalon(salon);
-                                setBookingSuccess(false);
-                            }}
-                        />
+                        <div className="salon-showcase-card" key={`salon-${salon.id}`}>
+                            <div className="salon-card-header">
+                                <h3>{salon.name}</h3>
+                                <div className="salon-rating">
+                                    <Star size={16} className="star-filled" /> {salon.rating} ({salon.reviews})
+                                </div>
+                            </div>
+                            <p className="salon-address"><MapPin size={14} /> {salon.address} • {salon.distance}</p>
+                            <div className="salon-card-footer">
+                                <span className="salon-price">{salon.price}</span>
+                                <button 
+                                    className="secondary-btn"
+                                    onClick={() => {
+                                        setSelectedStyle(hairstyles[0]);
+                                        setBookingSalon(salon);
+                                        setBookingSuccess(false);
+                                    }}
+                                >
+                                    Book Visit
+                                </button>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>

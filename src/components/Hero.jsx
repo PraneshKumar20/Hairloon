@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
-import { useTilt } from "../hooks/useTilt";
 import "../App.css";
 
 function Hero() {
   const [analysisStarted, setAnalysisStarted] = useState(false);
-  const tiltRef = useTilt({ maxTilt: 16, yOffset: -4 });
 
   const handleAnalyseClick = () => {
     setAnalysisStarted(true);
@@ -42,7 +40,7 @@ function Hero() {
       </div>
 
       <div className="hero-visual">
-        <div className="analysis-card" ref={tiltRef}>
+        <div className="analysis-card">
           <div className="analysis-icon">
             <Sparkles size={24} />
           </div>
